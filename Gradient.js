@@ -1,25 +1,25 @@
-const WIDTH = 1000;
-const HEIGHT = 10;
-
 class Gradient {
+  _width = 0;
+  _height = 1;
   _ctx = null;
   _colors = [];
   _gradients = [];
 
-  constructor(gradients) {
-    if (!Array.isArray(gradients)) {
+  constructor(colors, count = 100) {
+    if (!Array.isArray(colors)) {
       throw new Error(
-        `constructor param must be Array, current param is ${gradients}`,
+        `constructor param must be Array, current param is ${colors}`,
       );
     }
-    if (gradients.length < 2) {
+    if (colors.length < 2) {
       throw new Error(
         `length of constructor param must >= 2, current length is ${
-          gradients.length
+          colors.length
         }`,
       );
     }
-    this._gradients = gradients;
+    this._colors = colors;
+    this._width = count;
     this._init();
   }
   _init() {
@@ -29,30 +29,31 @@ class Gradient {
   }
   _initContext() {
     const canvas = document.createElement('canvas');
-    canvas.setAttribute('width', WIDTH);
-    canvas.setAttribute('height', HEIGHT);
+    canvas.setAttribute('width', this._width);
+    canvas.setAttribute('height', this._height);
     this._ctx = canvas.getContext('2d');
   }
   _drawGradient() {
-    const { _ctx, _gradients } = this;
+    const { _ctx, _colors } = this;
     const gradient = _ctx.createLinearGradient(
       0,
-      HEIGHT / 2,
-      WIDTH,
-      HEIGHT / 2,
+      this._height / 2,
+      this._width,
+      this._height / 2,
     );
-    const per = 1 / (_gradients.length - 1);
-    for (let i = 0; i < _gradients.length; i++) {
-      gradient.addColorStop(i * per, _gradients[i]);
+    const per = 1 / (_colors.length - 1);
+    for (let i = 0; i < _colors.length; i++) {
+      gradient.addColorStop(i * per, _colors[i]);
     }
     _ctx.fillStyle = gradient;
-    _ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    _ctx.fillRect(0, 0, this._width, this._height);
   }
   _getColors() {
     const { _ctx } = this;
-    const imageData = _ctx.getImageData(0, HEIGHT / 2, WIDTH, 1).data;
+    const imageData = _ctx.getImageData(0, this._height / 2, this._width, 1)
+      .data;
     for (let i = 0; i < imageData.length; i += 4) {
-      this._colors.push([
+      this._gradients.push([
         imageData[i],
         imageData[i + 1],
         imageData[i + 2],
@@ -60,17 +61,14 @@ class Gradient {
       ]);
     }
   }
+  getColors() {
+    return this._gradients;
+  }
   getColor(index) {
-    // index 为百分制的索引值
-    if (index < 0 || index > 100) {
-      console.warn(
-        `getColor param should >= 0 and <= 100, current param is ${index}`,
-      );
-      if (index < 0) index = 0;
-      if (index > 100) index = 100;
-    }
-    const i = Math.round(index * 10);
-    const [r, g, b, a] = this._colors[i];
+    index = Math.round(index);
+    if (index < 0) index = 0;
+    if (index > this._width) index = this._width;
+    const [r, g, b, a] = this._gradients[index];
     return `rgba(${r}, ${g}, ${b}, ${a})`;
   }
 }
