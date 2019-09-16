@@ -5,16 +5,16 @@ class Gradient {
   _colors = [];
   _gradients = [];
 
-  constructor(colors, count = 100) {
+  constructor (colors, count = 100) {
     if (!Array.isArray(colors)) {
       throw new Error(
-        `constructor param must be Array, current param is ${colors}`,
+        `constructor param must be Array, current param is ${ colors }`,
       );
     }
     if (colors.length < 2) {
       throw new Error(
         `length of constructor param must >= 2, current length is ${
-          colors.length
+        colors.length
         }`,
       );
     }
@@ -22,18 +22,18 @@ class Gradient {
     this._width = count;
     this._init();
   }
-  _init() {
+  _init () {
     this._initContext();
     this._drawGradient();
     this._getColors();
   }
-  _initContext() {
+  _initContext () {
     const canvas = document.createElement('canvas');
     canvas.setAttribute('width', this._width);
     canvas.setAttribute('height', this._height);
     this._ctx = canvas.getContext('2d');
   }
-  _drawGradient() {
+  _drawGradient () {
     const { _ctx, _colors } = this;
     const gradient = _ctx.createLinearGradient(
       0,
@@ -48,7 +48,7 @@ class Gradient {
     _ctx.fillStyle = gradient;
     _ctx.fillRect(0, 0, this._width, this._height);
   }
-  _getColors() {
+  _getColors () {
     const { _ctx } = this;
     const imageData = _ctx.getImageData(0, this._height / 2, this._width, 1)
       .data;
@@ -61,15 +61,19 @@ class Gradient {
       ]);
     }
   }
-  getColors() {
+  getColors () {
     return this._gradients;
   }
-  getColor(index) {
-    index = Math.round(index);
-    if (index < 0) index = 0;
-    if (index > this._width) index = this._width;
-    const [r, g, b, a] = this._gradients[index];
-    return `rgba(${r}, ${g}, ${b}, ${a})`;
+  getColor (index) {
+    if (index <= 0) {
+      return this._colors[0];
+    } else if (index >= this._width) {
+      return this._colors[this._colors.length - 1];
+    } else {
+      index = Math.round(index - 1);
+      const [r, g, b, a] = this._gradients[index];
+      return `rgba(${ r }, ${ g }, ${ b }, ${ a })`;
+    }
   }
 }
 
