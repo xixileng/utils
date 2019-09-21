@@ -1,5 +1,5 @@
 function downloadImage (img, opts = {}) {
-  const { width, height, name = '下载.png' } = opts;
+  const { width, height, name = '下载.png', format = 'image/png' } = opts;
 
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -13,7 +13,7 @@ function downloadImage (img, opts = {}) {
     canvas.height = img.height = height;
   }
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  const imgUrl = canvas.toDataURL('image/png');
+  const imgUrl = canvas.toDataURL(format);
 
   const link = document.createElement('a');
   link.href = imgUrl;

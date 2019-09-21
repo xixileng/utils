@@ -1,3 +1,9 @@
+// 内部函数不给外面调用
+const INIT = Symbol('init');
+const INIT_CONTEXT = Symbol('initContext');
+const DRAW_GRADIENT = Symbol('drawGradient');
+const GET_COLORS = Symbol('getColors');
+
 class Gradient {
   _width = 0;
   _height = 1;
@@ -20,20 +26,20 @@ class Gradient {
     }
     this._colors = colors;
     this._width = count;
-    this._init();
+    this[INIT]();
   }
-  _init () {
-    this._initContext();
-    this._drawGradient();
-    this._getColors();
+  [INIT] () {
+    this[INIT_CONTEXT]();
+    this[DRAW_GRADIENT]();
+    this[GET_COLORS]();
   }
-  _initContext () {
+  [INIT_CONTEXT] () {
     const canvas = document.createElement('canvas');
     canvas.setAttribute('width', this._width);
     canvas.setAttribute('height', this._height);
     this._ctx = canvas.getContext('2d');
   }
-  _drawGradient () {
+  [DRAW_GRADIENT] () {
     const { _ctx, _colors } = this;
     const gradient = _ctx.createLinearGradient(
       0,
@@ -48,7 +54,7 @@ class Gradient {
     _ctx.fillStyle = gradient;
     _ctx.fillRect(0, 0, this._width, this._height);
   }
-  _getColors () {
+  [GET_COLORS] () {
     const { _ctx } = this;
     const imageData = _ctx.getImageData(0, this._height / 2, this._width, 1)
       .data;
@@ -64,7 +70,7 @@ class Gradient {
   getColors () {
     return this._gradients;
   }
-  getColor (index) {
+  getColor (index = 0) {
     if (index <= 0) {
       return this._colors[0];
     } else if (index >= this._width) {

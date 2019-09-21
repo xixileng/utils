@@ -1,2 +1,10 @@
-# utils
-Some utils for JavaScript
+### 是啥
+一些 JavaScript 的小工具和 Vue 的小组件
+
+
+### 咋用
+每个目录下都有 demo，代码不多也可直接阅读
+
+### 有问题？
+欢迎直接 issue 或微信联系：13657215665（别搞骚扰哦）
+

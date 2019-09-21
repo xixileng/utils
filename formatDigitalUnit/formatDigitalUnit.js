@@ -1,16 +1,16 @@
 const units = ['k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
-const defaultPrecision = 2
+const DEFAULT_PRECISION = 2
 
 function formatDigitalUnit (value, options = {}) {
   let _value = parseFloat(value)
   if (Number.isNaN(_value)) {
-    throw new Error(`${value} cannot be converted to a number`)
+    throw new Error(`${ value } cannot be converted to a number`)
   }
   if (_value === 0) return _value
 
   let isPositive = _value > 0
   _value = Math.abs(_value)
-  const { unit, precision = defaultPrecision } = options
+  const { unit, precision = DEFAULT_PRECISION } = options
   let index = -1
 
   if (unit && units.includes(unit)) {
@@ -30,7 +30,7 @@ function formatDigitalUnit (value, options = {}) {
   if (String(_value).includes('.')) {
     _value = Math.round(_value * (10 ** precision)) / (10 ** precision)
   }
-  return `${isPositive ? '' : '-'}${_value}${units[index] || ''}`
+  return `${ isPositive ? '' : '-' }${ _value }${ units[index] || '' }`
 }
 
 export default formatDigitalUnit
